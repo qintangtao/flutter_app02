@@ -49,6 +49,7 @@ class _RegisterPageState extends State<RegisterPage> {
     TFormRow.input(
       title: "验证码",
       placeholder: "请输入验证码",
+      keyboardType: TextInputType.phone,
       suffixWidget: (context, row) {
         print('TFormRow.input suffixWidget');
         return VerifitionCodeButton(
@@ -246,9 +247,6 @@ class _RegisterPageState extends State<RegisterPage> {
     List errors = (_formKey.currentState as TFormState).validate();
     if (errors.isEmpty)
     {
-      print('register account: ${_accountController
-          .text}, password:${_passWordController.text}');
-
       DialogUtil.showLoading(context);
 
       _registerViewModel

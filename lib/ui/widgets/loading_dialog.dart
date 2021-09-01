@@ -36,17 +36,17 @@ class LoadingDialog extends StatelessWidget {
           color: Colors.transparent,
           child: Center(
             child: SizedBox(
-              height: ScreenUtil().setHeight((AppDimens.DIMENS_20 +
-                  (2*(radius ?? AppDimens.DIMENS_60)).toDouble()+
-                  (fontSize ?? AppDimens.DIMENS_42) +
-                  AppDimens.DIMENS_120)),
-              width: ScreenUtil().setHeight(AppDimens.DIMENS_400),
+              height: ScreenUtil().setHeight((30 +
+                  (2*(radius ?? 20)).toDouble()+
+                  (fontSize ?? 13) +
+                  30)),
+              width: ScreenUtil().setWidth(130),
               child: GestureDetector(
                 onTap: () {},
                 child: Container(
                   decoration: ShapeDecoration(
                     color: backgroundColor ?? Colors.white,
-                    shape: RoundedRectangleBorder(
+                    shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(AppDimens.DIMENS_10),),
                     ),
                   ),
@@ -56,14 +56,14 @@ class LoadingDialog extends StatelessWidget {
                     children: [
                       CupertinoActivityIndicator(
                         animating: true,
-                        radius: ScreenUtil().setHeight(radius ?? AppDimens.DIMENS_60),
+                        radius: ScreenUtil().setHeight(radius ?? 20),
                       ),
-                      Padding(padding: EdgeInsets.all(ScreenUtil().setHeight(AppDimens.DIMENS_20))),
+                      Padding(padding: EdgeInsets.all(ScreenUtil().setHeight(6))),
                       Text(
                         title ?? S.of(context).loading,
                         style: TextStyle(
-                          fontSize: ScreenUtil().setSp(this.fontSize ?? AppDimens.DIMENS_42),
-                          color: color ?? Color(0xff999999),
+                          fontSize: ScreenUtil().setSp(fontSize ?? 13),
+                          color: color ?? const Color(0xff999999),
                         ),
                       ),
                     ],

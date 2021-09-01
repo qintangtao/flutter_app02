@@ -8,7 +8,7 @@ class LoginViewModel with ChangeNotifier {
 
 
   Future<bool> login(String account, String password) async {
-    bool result = false;
+    bool result = true;
 
     print("LoginViewModel.login called.");
 

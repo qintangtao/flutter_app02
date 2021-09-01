@@ -18,11 +18,16 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormFieldState<String>> _accountKey = GlobalKey<FormFieldState<String>>();
+  final GlobalKey<FormFieldState<String>> _passwordKey = GlobalKey<FormFieldState<String>>();
 
   final LoginViewModel _loginViewModel = LoginViewModel();
 
   final TextEditingController _accountController = TextEditingController();
   final TextEditingController _passWordController = TextEditingController();
+
+  final FocusNode _focusNode = FocusNode();
+  final FocusNode _focusNode2 = FocusNode();
 
   @override
   void initState() {
@@ -35,6 +40,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    print('_LoginPageState build');
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -79,6 +85,7 @@ class _LoginPageState extends State<LoginPage> {
                         top: ScreenUtil().setHeight(AppDimens.DIMENS_50)),
                   ),
                   TextFormField(
+                    key: _accountKey,
                     maxLines: 1,
                     maxLength: 11,
                     keyboardType: TextInputType.phone,
@@ -107,12 +114,14 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     controller: _accountController,
+                    focusNode: _focusNode,
                   ),
                   Padding(
                     padding: EdgeInsets.only(
                         top: ScreenUtil().setHeight(AppDimens.DIMENS_6)),
                   ),
                   TextFormField(
+                    key: _passwordKey,
                     maxLines: 1,
                     maxLength: 12,
                     obscureText: true,
@@ -141,6 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     controller: _passWordController,
+                    focusNode: _focusNode2,
                   ),
                   Padding(
                       padding: EdgeInsets.only(
@@ -200,10 +210,13 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _login() {
-    FocusScope.of(context).unfocus();
+    //FocusScope.of(context).unfocus();
+    _focusNode.unfocus();
+    _focusNode2.unfocus();
     if (_formKey.currentState?.validate() ?? false) {
-      print('login account: ${_accountController
-          .text}, password:${_passWordController.text}');
+
+      print('login account: ${_accountController.text}, password:${_passWordController.text}');
+      print('login account: ${_accountKey.currentState?.value}, password:${_passwordKey.currentState?.value}');
 
       DialogUtil.showLoading(context);
 
@@ -212,6 +225,7 @@ class _LoginPageState extends State<LoginPage> {
           .then((value) {
         if (value) {
           print('login true');
+          //Navigator.pop(context);
         } else {
           print('login false');
         }
