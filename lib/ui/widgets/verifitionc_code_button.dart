@@ -52,7 +52,9 @@ class _VerifitionCodeButtonState extends State<VerifitionCodeButton> {
               style: Theme.of(context)
                   .textTheme
                   .button
-                  ?.copyWith(color: Theme.of(context).primaryColor),
+                  ?.copyWith(
+                  color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).primaryColor : Colors.white
+              ),
             );
           },
         ),

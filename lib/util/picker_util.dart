@@ -10,15 +10,24 @@ Future<String> showPicker(
     List options,
     {List<int>? selecteds}) async {
   String? result;
+  final DefaultTextStyle defaultTextStyle = DefaultTextStyle.of(context);
+  final ThemeData theme = Theme.of(context);
+  final BottomSheetThemeData sheetTheme = theme.bottomSheetTheme;
+  final bool isLight = theme.brightness == Brightness.light;
+
   await Picker(
     height: ScreenUtil().setHeight(180),
     itemExtent: ScreenUtil().setHeight(30),
+    backgroundColor: sheetTheme.modalBackgroundColor ?? sheetTheme.backgroundColor,
+    textStyle: defaultTextStyle.style.copyWith(
+      fontSize: Picker.DefaultTextSize,
+    ),
     cancelTextStyle: TextStyle(
-      color: Theme.of(context).primaryColor,
+      color: isLight ? theme.primaryColor : Colors.white,
       fontSize: ScreenUtil().setSp(18),
     ),
     confirmTextStyle: TextStyle(
-      color: Theme.of(context).primaryColor,
+      color: isLight ? theme.primaryColor : Colors.white,
       fontSize: ScreenUtil().setSp(18),
     ),
     adapter: PickerDataAdapter<String>(pickerdata: options),
@@ -35,15 +44,23 @@ Future<String> showPickerDate(
       int? yearEnd,
     }) async {
   String? result;
+  final DefaultTextStyle defaultTextStyle = DefaultTextStyle.of(context);
+  final ThemeData theme = Theme.of(context);
+  final BottomSheetThemeData sheetTheme = theme.bottomSheetTheme;
+  final bool isLight = theme.brightness == Brightness.light;
   await Picker(
     height: ScreenUtil().setHeight(180),
     itemExtent: ScreenUtil().setHeight(30),
+    backgroundColor: sheetTheme.modalBackgroundColor ?? sheetTheme.backgroundColor,
+    textStyle: defaultTextStyle.style.copyWith(
+      fontSize: Picker.DefaultTextSize,
+    ),
     cancelTextStyle: TextStyle(
-      color: Theme.of(context).primaryColor,
+      color: isLight ? theme.primaryColor : Colors.white,
       fontSize: ScreenUtil().setSp(18),
     ),
     confirmTextStyle: TextStyle(
-      color: Theme.of(context).primaryColor,
+      color: isLight ? theme.primaryColor : Colors.white,
       fontSize: ScreenUtil().setSp(18),
     ),
     adapter: DateTimePickerAdapter(
@@ -67,6 +84,8 @@ Future<String> showPickerDate(
 Future<String> showCityPicker(
     BuildContext context
     ) async {
+  final DefaultTextStyle defaultTextStyle = DefaultTextStyle.of(context);
+
   Result? result = await CityPickers.showCityPicker(
     context: context,
     height: ScreenUtil().setHeight(220),
@@ -74,14 +93,14 @@ Future<String> showCityPicker(
     cancelWidget: Text(
       INTL.S.of(context).cancelText,
       style: TextStyle(
-        color: Theme.of(context).primaryColor,
+        color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).primaryColor : Colors.white,
         fontSize: ScreenUtil().setSp(18),
       ),
     ),
     confirmWidget: Text(
       INTL.S.of(context).confirmText,
       style: TextStyle(
-        color: Theme.of(context).primaryColor,
+        color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).primaryColor : Colors.white,
         fontSize: ScreenUtil().setSp(18),
       ),
     ),
@@ -109,7 +128,7 @@ Future<String> showCityPicker(
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           textScaleFactor: MediaQuery.of(context).textScaleFactor,
-          style: Theme.of(context).textTheme.button!.copyWith(
+          style: defaultTextStyle.style.copyWith(
             fontSize: fontSize,
           ),
         ),

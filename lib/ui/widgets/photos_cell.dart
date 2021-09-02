@@ -26,7 +26,7 @@ class CustomPhotosWidget extends StatelessWidget {
               row.title,
               style: const TextStyle(
                 fontSize: 15,
-                color: Colors.black87,
+                //color: Colors.black87,
               ),
             ),
           ),

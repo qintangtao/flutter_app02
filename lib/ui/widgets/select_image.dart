@@ -32,7 +32,7 @@ class _SelectImageViewState  extends State<SelectImageView> {
       child: Container(
         width: ScreenUtil().setWidth(90),
         margin: EdgeInsets.only(right: ScreenUtil().setWidth(10)),
-        color: Colors.grey[200],
+        color: Theme.of(context).brightness == Brightness.light ? Colors.grey[200] : Colors.grey[700] ,
         child:  imageUrl != null
           ? Image.file(File(imageUrl!),fit: BoxFit.cover,)
           : const SizedBox.shrink()
@@ -87,9 +87,10 @@ class _SelectImageViewState  extends State<SelectImageView> {
                 title: Text(
                   S.of(context).cancelText,
                   textAlign: TextAlign.center,
+                  /*
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
-                  ),
+                  ),*/
                 ),
                 onTap: () {
                   Navigator.pop(context);

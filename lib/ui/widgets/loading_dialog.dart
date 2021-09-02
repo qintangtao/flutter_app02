@@ -28,6 +28,7 @@ class LoadingDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    final DialogTheme dialogTheme = DialogTheme.of(context);
     return Material(
       type: MaterialType.transparency,
       child: GestureDetector(
@@ -45,7 +46,7 @@ class LoadingDialog extends StatelessWidget {
                 onTap: () {},
                 child: Container(
                   decoration: ShapeDecoration(
-                    color: backgroundColor ?? Colors.white,
+                    color: backgroundColor ?? dialogTheme.backgroundColor ?? Theme.of(context).dialogBackgroundColor,
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(AppDimens.DIMENS_10),),
                     ),

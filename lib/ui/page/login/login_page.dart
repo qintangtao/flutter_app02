@@ -26,8 +26,8 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _accountController = TextEditingController();
   final TextEditingController _passWordController = TextEditingController();
 
-  final FocusNode _focusNode = FocusNode();
-  final FocusNode _focusNode2 = FocusNode();
+  final FocusNode _accountFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -41,6 +41,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     print('_LoginPageState build');
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -65,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
                   Text(
                     S.of(context).login_welcome,
                     style: TextStyle(
-                      color: const Color(0xff333333),
+                      color: isDark ? Colors.white : const Color(0xff333333),
                       fontSize: ScreenUtil().setSp(AppDimens.DIMENS_20),
                     ),
                   ),
@@ -93,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: InputDecoration(
                       icon: Icon(
                         FMICon.ACCOUNT,
-                        color: Theme.of(context).primaryColor,
+                        color: isDark ? Colors.white60 : Theme.of(context).primaryColor,
                         size: ScreenUtil().setWidth(AppDimens.DIMENS_30),
                       ),
                       hintText: S.of(context).account_hint,
@@ -114,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     controller: _accountController,
-                    focusNode: _focusNode,
+                    focusNode: _accountFocusNode,
                   ),
                   Padding(
                     padding: EdgeInsets.only(
@@ -129,7 +130,7 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: InputDecoration(
                       icon: Icon(
                         FMICon.PASSWORD,
-                        color: Theme.of(context).primaryColor,
+                        color: isDark ? Colors.white60 : Theme.of(context).primaryColor,
                         size: ScreenUtil().setWidth(AppDimens.DIMENS_30),
                       ),
                       hintText: S.of(context).password_hint,
@@ -150,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     controller: _passWordController,
-                    focusNode: _focusNode2,
+                    focusNode: _passwordFocusNode,
                   ),
                   Padding(
                       padding: EdgeInsets.only(
@@ -185,7 +186,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Text(
                         S.of(context).immediately_register,
                         style: TextStyle(
-                          color: const Color(0xff333333),
+                          //color: const Color(0xff333333),
                           fontSize: ScreenUtil().setSp(14),
                         ),
                       ),
@@ -209,10 +210,14 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  void _unfocus() {
+    _accountFocusNode.unfocus();
+    _passwordFocusNode.unfocus();
+  }
+
   void _login() {
     //FocusScope.of(context).unfocus();
-    _focusNode.unfocus();
-    _focusNode2.unfocus();
+    _unfocus();
     if (_formKey.currentState?.validate() ?? false) {
 
       print('login account: ${_accountController.text}, password:${_passWordController.text}');

@@ -33,17 +33,13 @@ class _MainPageState extends State<MainPage> {
   ];
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    /*
-    ScreenUtil.init(
-        BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width,
-            maxHeight: MediaQuery.of(context).size.height
-        ),
-        designSize: const Size(360, 690),
-        orientation: Orientation.portrait
-    );
-  */
     if (_title.isEmpty) {
       _title = S.of(context).home;
     }
@@ -53,7 +49,6 @@ class _MainPageState extends State<MainPage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(_title),
-        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: PageView(
         onPageChanged: _pageChange,
@@ -131,6 +126,21 @@ class _MainPageState extends State<MainPage> {
             },
           ),
 
+          ListTile(
+            leading: const Icon(Icons.color_lens),
+            title: const Text('夜间模式'),
+            trailing:const  Icon(Icons.chevron_right),
+            onTap: () {
+              final ThemeViewModel themeViewModel = Provider.of<ThemeViewModel>(context, listen: false);
+              if (themeViewModel.themeMode == ThemeMode.light) {
+                themeViewModel.themeMode = ThemeMode.dark;
+              } else {
+                themeViewModel.themeMode = ThemeMode.light;
+              }
+              Navigator.of(context).pop();
+            },
+          ),
+
           const Divider(),
 
           ListTile(
@@ -200,7 +210,7 @@ class _MainPageState extends State<MainPage> {
             )
           ],
           content: SingleChildScrollView(
-            child: Container(
+            child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.9,
               height: MediaQuery.of(context).size.height * 0.5,
               child: ListView.builder(
@@ -213,7 +223,7 @@ class _MainPageState extends State<MainPage> {
                       color: YColors.themeColor[position]["primaryColor"],
                     ),
                     onTap: () {
-                      Provider.of<ThemeViewModel>(context, listen: false).setTheme(position);
+                      Provider.of<ThemeViewModel>(context, listen: false).themeIndex = position;
                       Navigator.of(context).pop();
                     },
                   );
