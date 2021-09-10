@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_app02/generated/l10n.dart';
@@ -20,40 +19,50 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
 
-  int _currentIndex = 0;
+  int currentIndex = 1;
 
-  String _title = '';
+  String? title;
 
-  final _pageController = PageController(initialPage: 0);
+  //final titleNotifier = ValueNotifier<String>('');
 
-  final List<Widget> _pages = <Widget>[
-    HomePage(),
-    CategoryPage(),
-    MinePage(),
+  PageController? pageController;// = PageController(initialPage: 0);
+
+  final pages = <Widget>[
+    const HomePage(),
+    const CategoryPage(),
+    const MinePage(),
   ];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    print('_MainPageState initState');
+    pageController ??= PageController(initialPage: currentIndex);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_title.isEmpty) {
-      _title = S.of(context).home;
-    }
-
+    print('_MainPageState build');
+    //Theme.of(context)  会导致重复build，原因未知
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(_title),
+        title: Text(title ?? S.of(context).home),
+        /*
+        title: ValueListenableBuilder<String>(
+          valueListenable: titleNotifier,
+          builder: (context, value, child) {
+            return Text(value);
+          },
+        ),
+         */
       ),
       body: PageView(
-        onPageChanged: _pageChange,
-        controller: _pageController,
-        children: _pages,
+        onPageChanged: _onPageChanged,
+        controller: pageController,
+        children: pages,
       ),
       bottomNavigationBar: BottomNavigationBar (
         items: [
@@ -61,14 +70,13 @@ class _MainPageState extends State<MainPage> {
           BottomNavigationBarItem (icon: const Icon(Icons.category), label: S.of(context).category),
           BottomNavigationBarItem (icon: const Icon(Icons.settings), label: S.of(context).mine),
         ],
-        currentIndex: _currentIndex,
+        currentIndex: currentIndex,
         type: BottomNavigationBarType.fixed,
-        fixedColor: Theme.of(context).primaryColor,
         onTap: _onItemTapped,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));},//_showToast,
-        tooltip: '点击选中最后一个',
+        onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));},
+        //tooltip: '点击选中最后一个',
         child: const Icon(Icons.add, color: Colors.white),
         backgroundColor: Theme.of(context).primaryColor,
       ),
@@ -76,7 +84,15 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    pageController?.dispose();
+    super.dispose();
+  }
+
   Widget _showDrawer() {
+    final ThemeViewModel themeViewModel = ThemeViewModel.of(context);
     return Drawer(
       child: ListView(
         children: [
@@ -117,6 +133,7 @@ class _MainPageState extends State<MainPage> {
           ),
 
           ListTile(
+            enabled: themeViewModel.themeMode == ThemeMode.light,
             leading: const Icon(Icons.color_lens),
             title: Text(S.of(context).theme),
             trailing:const  Icon(Icons.chevron_right),
@@ -129,16 +146,29 @@ class _MainPageState extends State<MainPage> {
           ListTile(
             leading: const Icon(Icons.color_lens),
             title: const Text('夜间模式'),
-            trailing:const  Icon(Icons.chevron_right),
+            //trailing:const  Icon(Icons.chevron_right),
+            trailing: Switch(
+                value: themeViewModel.themeMode == ThemeMode.dark,
+                //activeColor: Theme.of(context).primaryColor,
+                onChanged: (value) => {
+                  if (value) {
+                      themeViewModel.themeMode = ThemeMode.dark
+                  } else {
+                      themeViewModel.themeMode = ThemeMode.light
+                  }
+                },
+            ),
+            /*
             onTap: () {
-              final ThemeViewModel themeViewModel = Provider.of<ThemeViewModel>(context, listen: false);
+              //final ThemeViewModel themeViewModel = Provider.of<ThemeViewModel>(context, listen: false);
+              final ThemeViewModel themeViewModel = ThemeViewModel.of(context);
               if (themeViewModel.themeMode == ThemeMode.light) {
                 themeViewModel.themeMode = ThemeMode.dark;
               } else {
                 themeViewModel.themeMode = ThemeMode.light;
               }
               Navigator.of(context).pop();
-            },
+            },*/
           ),
 
           const Divider(),
@@ -223,7 +253,8 @@ class _MainPageState extends State<MainPage> {
                       color: YColors.themeColor[position]["primaryColor"],
                     ),
                     onTap: () {
-                      Provider.of<ThemeViewModel>(context, listen: false).themeIndex = position;
+                      //Provider.of<ThemeViewModel>(context, listen: false).themeIndex = position;
+                      ThemeViewModel.of(context).themeIndex = position;
                       Navigator.of(context).pop();
                     },
                   );
@@ -236,35 +267,43 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  void _showToast() {
-    Fluttertoast.showToast(msg: "选中",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Theme.of(context).primaryColor,
-        timeInSecForIosWeb: 1,
-        fontSize: 16.0
-    );
-    _onItemTapped(2);
-  }
-
   void _onItemTapped(int index) {
-    _pageController.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.ease);
+    pageController?.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.ease);
   }
 
-  void _pageChange(int index) {
+  void _onPageChanged(int index) {
+    if (currentIndex == index) return;
+    print('_onPageChanged ${index}');
     setState(() {
-      _currentIndex = index;
+      currentIndex = index;
       switch(index) {
         case 0:
-          _title = S.of(context).home;
+          title = S.of(context).home;
           break;
         case 1:
-          _title = S.of(context).category;
+          title = S.of(context).category;
           break;
         case 2:
-          _title = S.of(context).mine;
+          title = S.of(context).mine;
           break;
       }
     });
+
+    /*
+    currentIndex = index;
+    switch(index) {
+      case 0:
+        title = S.of(context).home;
+        break;
+      case 1:
+        title = S.of(context).category;
+        break;
+      case 2:
+        title = S.of(context).mine;
+        break;
+    }
+    titleNotifier.value = title!;
+     */
+
   }
 }

@@ -3,6 +3,8 @@ import 'package:flutter_app02/generated/l10n.dart';
 
 
 class MinePage extends StatefulWidget {
+  const MinePage({Key? key}) : super(key: key);
+
   @override
   State<MinePage> createState() => _MinePageState();
 }
@@ -13,7 +15,6 @@ class _MinePageState extends State<MinePage> with AutomaticKeepAliveClientMixin{
   void initState() {
     // TODO: implement initState
     super.initState();
-    //_initAsync();
     print("_MinePageState.initState");
   }
 

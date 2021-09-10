@@ -1,25 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_app02/res/colors.dart';
 
 class ThemeViewModel with ChangeNotifier {
 
-  void init() async {
-    int index = await _loadThemeMode();
-    if (index == ThemeMode.light.index) {
-      _themeMode = ThemeMode.light;
-    } else if (index == ThemeMode.dark.index) {
-      _themeMode = ThemeMode.dark;
-    } else {
-      _themeMode = ThemeMode.system;
-    }
-
-    index = await _loadThemeIndex();
-    _themeIndex = index;
-
-    print("_themeMode:${_themeMode.index}, _themeIndex:${_themeIndex}");
-    notifyListeners();
+  ThemeViewModel() {
+    //_init();
   }
+
+  static ThemeViewModel of(BuildContext context) {
+    return Provider.of<ThemeViewModel>(context, listen: false);
+  }
+
+  void init() async {
+    ThemeMode oldThemeMode = themeMode;
+    int oldThemeIndex = themeIndex;
+
+    await _init();
+
+    print("_themeMode:${themeMode.index}, _themeIndex:${themeIndex}");
+
+    if (oldThemeMode != themeMode || oldThemeIndex != themeIndex) {
+      notifyListeners();
+    }
+  }
+
 
   ThemeMode _themeMode = ThemeMode.system;
   ThemeMode get themeMode => _themeMode;
@@ -54,6 +60,28 @@ class ThemeViewModel with ChangeNotifier {
        appBarTheme: AppBarTheme(
          backgroundColor: primaryColor,
        ),
+       bottomNavigationBarTheme: BottomNavigationBarThemeData(
+         selectedItemColor: primaryColor,
+         elevation: 8.0,
+       ),
+       switchTheme : SwitchThemeData(
+         thumbColor: MaterialStateProperty.resolveWith(
+                 (states) {
+               if (states.contains(MaterialState.selected)) {
+                 return primaryColor;
+               }
+               return null;
+             }
+         ),
+         trackColor: MaterialStateProperty.resolveWith(
+                 (states) {
+               if (states.contains(MaterialState.selected)) {
+                 return primaryColor.withAlpha(180);
+               }
+               return null;
+             }
+         ),
+       ),
      );
     return ThemeData.from(
       colorScheme: ColorScheme.light(
@@ -74,7 +102,33 @@ class ThemeViewModel with ChangeNotifier {
   }
 
   ThemeData _dartTheme() {
-    return ThemeData.dark();
+    return ThemeData.dark().copyWith(
+      //shadowColor: Colors.white,
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: Colors.grey[800]!,
+        unselectedItemColor: Colors.grey[600]!,
+        selectedItemColor: Colors.white,
+        elevation: 8.0,
+      ),
+      switchTheme : SwitchThemeData(
+        thumbColor: MaterialStateProperty.resolveWith(
+            (states) {
+              if (states.contains(MaterialState.selected)) {
+                return Colors.white70;
+              }
+              return null;
+            }
+        ),
+        trackColor: MaterialStateProperty.resolveWith(
+                (states) {
+              if (states.contains(MaterialState.selected)) {
+                return Colors.white54;
+              }
+              return null;
+            }
+        ),
+      ),
+    );
     return ThemeData.from(
       colorScheme: const ColorScheme.dark(
           primary: Colors.white, //Color(0xff212121),
@@ -112,5 +166,18 @@ class ThemeViewModel with ChangeNotifier {
   Future<int> _loadThemeIndex() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     return sp.getInt("themeIndex") ?? 0;
+  }
+
+  Future _init() async {
+    int index = await _loadThemeMode();
+    if (index == ThemeMode.light.index) {
+      _themeMode = ThemeMode.light;
+    } else if (index == ThemeMode.dark.index) {
+      _themeMode = ThemeMode.dark;
+    } else {
+      _themeMode = ThemeMode.system;
+    }
+
+    _themeIndex = await _loadThemeIndex();
   }
 }

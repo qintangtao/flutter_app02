@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,12 +8,30 @@ import 'package:flutter_app02/viewmodel/theme_view_model.dart';
 import 'package:flutter_app02/generated/l10n.dart';
 import 'package:flutter_app02/ui/page/main/main_page.dart';
 
-void main() async {
+Future init() async {
+  await Future.delayed(const Duration(seconds: 2));
+  SharedPreferences sp = await SharedPreferences.getInstance();
+  int index = sp.getInt("themeIndex") ?? 0;
+  print("default theme index ${index}");
+}
+/*
+void main() => init().then((value) =>
+    runApp(MultiProvider(
+        providers: [
+          ChangeNotifierProvider<ThemeViewModel>.value(value: ThemeViewModel()),
+        ],
+        child: const MyApp(),
+      ),
+    )
+);
+*/
+
+void main() {
   runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider<ThemeViewModel>.value(value: ThemeViewModel()),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -31,7 +50,8 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Provider.of<ThemeViewModel>(context, listen: false).init();
+    //Provider.of<ThemeViewModel>(context, listen: false).init();
+    ThemeViewModel.of(context).init();
   }
 
   // This widget is the root of your application.
@@ -70,6 +90,7 @@ class _MyAppState extends State<MyApp> {
     );
 
   }
+
 
 }
 

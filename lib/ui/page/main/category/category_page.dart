@@ -3,6 +3,8 @@ import 'package:flutter_app02/generated/l10n.dart';
 
 
 class CategoryPage extends StatefulWidget {
+  const CategoryPage({Key? key}) : super(key: key);
+
   @override
   State<CategoryPage> createState() => _CategoryPageState();
 }
@@ -13,7 +15,6 @@ class _CategoryPageState extends State<CategoryPage> with AutomaticKeepAliveClie
   void initState() {
     // TODO: implement initState
     super.initState();
-    //_initAsync();
     print("_CategoryPageState.initState");
   }
 
