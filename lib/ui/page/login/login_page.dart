@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_app02/generated/l10n.dart';
 import 'package:flutter_app02/constant/app_dimens.dart';
-import 'package:flutter_app02/constant/fm_icon.dart';
+import 'package:flutter_app02/constant/ali_icon.dart';
 import 'package:flutter_app02/util/toast_util.dart';
 import 'package:flutter_app02/util/dialog_util.dart';
 import 'package:flutter_app02/viewmodel/login_view_model.dart';
 import 'package:flutter_app02/ui/page/register/register2_page.dart';
+import 'package:flutter_app02/ui/widgets/list/list_listenable_builder.dart';
+import 'package:flutter_app02/model/user.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -93,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                     validator: _validatorAccount,
                     decoration: InputDecoration(
                       icon: Icon(
-                        FMICon.ACCOUNT,
+                        AliIcon.account,
                         color: isDark ? Colors.white60 : Theme.of(context).primaryColor,
                         size: ScreenUtil().setWidth(AppDimens.DIMENS_30),
                       ),
@@ -129,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                     validator: _validatorPassWord,
                     decoration: InputDecoration(
                       icon: Icon(
-                        FMICon.PASSWORD,
+                        AliIcon.password,
                         color: isDark ? Colors.white60 : Theme.of(context).primaryColor,
                         size: ScreenUtil().setWidth(AppDimens.DIMENS_30),
                       ),
@@ -191,7 +193,37 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                  )
+                  ),
+                  /*
+                  SizedBox(
+                    width: double.infinity,
+                    height: ScreenUtil().setHeight(600),
+                    child: InkWell(
+                      onTap: _register,
+                      child: ListListenableBuilder<ValueNotifier<User>>(
+                        valueListenable: _loginViewModel.users,
+                        builder: (context, users, child)  {
+                          return ListView.builder(
+                            itemCount: users.length,
+                            itemBuilder: (context, index) {
+                              debugPrint("ListListenableBuilder build ${index}");
+                              return ValueListenableBuilder<User>(
+                                valueListenable: users[index],
+                                builder: (context, user, child)  {
+                                  debugPrint("ValueListenableBuilder build ${user.username} ${user.password}");
+                                  return ListTile(
+                                    title: Text(user.username),
+                                    subtitle: Text(user.password),
+                                  );
+                                }
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  */
                 ],
               ),
             ),

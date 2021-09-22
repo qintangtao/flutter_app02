@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_app02/generated/l10n.dart';
 import 'package:flutter_app02/constant/app_dimens.dart';
-import 'package:flutter_app02/constant/fm_icon.dart';
+import 'package:flutter_app02/constant/ali_icon.dart';
 import 'package:flutter_app02/util/toast_util.dart';
 import 'package:flutter_app02/util/dialog_util.dart';
 import 'package:flutter_app02/viewmodel/register_view_model.dart';
@@ -82,7 +82,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     validator: _validatorAccount,
                     decoration: InputDecoration(
                       icon: Icon(
-                        FMICon.ACCOUNT,
+                        AliIcon.account,
                         color: Theme.of(context).primaryColor,
                         size: ScreenUtil().setWidth(AppDimens.DIMENS_80),
                       ),
@@ -116,7 +116,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     validator: _validatorPassWord,
                     decoration: InputDecoration(
                       icon: Icon(
-                        FMICon.PASSWORD,
+                        AliIcon.password,
                         color: Theme.of(context).primaryColor,
                         size: ScreenUtil().setWidth(AppDimens.DIMENS_80),
                       ),

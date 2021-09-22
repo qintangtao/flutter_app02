@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,13 +9,14 @@ import 'package:flutter_app02/viewmodel/theme_view_model.dart';
 import 'package:flutter_app02/generated/l10n.dart';
 import 'package:flutter_app02/ui/page/main/main_page.dart';
 
+/*
 Future init() async {
   await Future.delayed(const Duration(seconds: 2));
   SharedPreferences sp = await SharedPreferences.getInstance();
   int index = sp.getInt("themeIndex") ?? 0;
   print("default theme index ${index}");
 }
-/*
+
 void main() => init().then((value) =>
     runApp(MultiProvider(
         providers: [

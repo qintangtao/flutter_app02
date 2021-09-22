@@ -20,7 +20,6 @@ class ThemeViewModel with ChangeNotifier {
     await _init();
 
     print("_themeMode:${themeMode.index}, _themeIndex:${themeIndex}");
-
     if (oldThemeMode != themeMode || oldThemeIndex != themeIndex) {
       notifyListeners();
     }

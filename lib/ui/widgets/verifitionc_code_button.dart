@@ -48,7 +48,8 @@ class _VerifitionCodeButtonState extends State<VerifitionCodeButton> {
           builder: (context, value, child)  {
             //print('_secondsNotifier.build.');
             return Text(
-              timer==null ? widget.title : secondsNotifier.value.toString() + "s",
+              //timer==null ? widget.title : value.toString() + "s",
+              timer==null ? widget.title : "${value}s",
               style: Theme.of(context)
                   .textTheme
                   .button
