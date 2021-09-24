@@ -37,7 +37,7 @@ class _CategoryPageState extends BaseState<CategoryPage, CategoryViewModel> with
   Widget build(BuildContext context) => buildChangeNotifierProvider(context);
 
   @override
-  Widget buildSuccessPage(CategoryViewModel model) {
+  Widget buildSuccessPage(BuildContext context, CategoryViewModel model) {
     return SmartRefresher(
       enablePullDown: true,
       enablePullUp: true,

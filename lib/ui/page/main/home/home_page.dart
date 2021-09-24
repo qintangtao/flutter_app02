@@ -65,11 +65,11 @@ class _HomePageState extends State<HomePage>  with AutomaticKeepAliveClientMixin
 
   Widget buildPage(model) {
     stopRefreshOrLoadMore(_refreshController);
-    if (model.pageState == PageState.success) {
+    if (model.state == PageState.success) {
       return buildSuccessPage(model);
-    } else if (model.pageState == PageState.loading) {
+    } else if (model.state == PageState.loading) {
       return buildLoadingPage(model);
-    } else if (model.pageState == PageState.empty) {
+    } else if (model.state == PageState.empty) {
       return buildEmptyPage(model);
     } else {
       return buildErrorPage(model);

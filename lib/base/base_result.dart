@@ -21,8 +21,8 @@ class BaseResult<T> extends CResult<T> {
   @override
   bool get isSuccess => code == 0;
 
-  final _errorCode;
-  final _errorMsg;
+  final int _errorCode;
+  final String _errorMsg;
   T? _data;
 
   factory BaseResult.fromJson(Map<String, dynamic> json) => BaseResult(

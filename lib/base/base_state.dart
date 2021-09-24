@@ -39,25 +39,6 @@ abstract class BaseState<T extends StatefulWidget, VM extends BaseViewModel> ext
     super.dispose();
   }
 
-  void _registerListenable() {
-    viewModel.startListenable.addListener(_onLoadStart);
-    viewModel.errorListenable.addListener(_onLoadError);
-    viewModel.completeListenable.addListener(_onLoadResult);
-    viewModel.completeListenable.addListener(_onLoadCompleted);
-  }
-
-  void _unregisterListenable() {
-    viewModel.startListenable.removeListener(_onLoadStart);
-    viewModel.errorListenable.removeListener(_onLoadError);
-    viewModel.completeListenable.removeListener(_onLoadResult);
-    viewModel.completeListenable.removeListener(_onLoadCompleted);
-  }
-
-  void _onLoadStart() { onLoadStart(); }
-  void _onLoadError() { onLoadError(viewModel.errorListenable.value); }
-  void _onLoadResult() { onLoadResult(viewModel.resultListenable.value); }
-  void _onLoadCompleted() { onLoadCompleted(); }
-
   @override
   Widget build(BuildContext context) {
     debugPrint("BaseState.build");
@@ -68,80 +49,33 @@ abstract class BaseState<T extends StatefulWidget, VM extends BaseViewModel> ext
     return ChangeNotifierProvider<VM>(
       create: (_) => viewModel,
       child: Consumer<VM>(
-        builder: (builder, model, child) {
-          return buildPage(model);
+        builder: (context, model, child) {
+          return buildPage(context, model);
         },
       ),
     );
   }
 
-  Widget buildPage(VM model) {
-    //stopRefreshOrLoadMore(_refreshController);
-    if (model.pageState == PageState.success) {
-      return buildSuccessPage(model);
-    } else if (model.pageState == PageState.loading) {
-      return buildLoadingPage(model);
-    } else if (model.pageState == PageState.empty) {
-      return buildEmptyPage(model);
+  Widget buildPage(BuildContext context, VM model) {
+    if (model.state == PageState.success) {
+      return buildSuccessPage(context, model);
+    } else if (model.state == PageState.loading) {
+      return buildLoadingPage(context, model);
+    } else if (model.state == PageState.empty) {
+      return buildEmptyPage(context, model);
     } else {
-      return buildErrorPage(model);
+      return buildErrorPage(context, model);
     }
   }
 
+  Widget buildSuccessPage(BuildContext context, VM model);
 
-  Widget buildSuccessPage(VM model);
-  /*
-  Widget buildSuccessPage(VM model) {
-    return SmartRefresher(
-      enablePullDown: true,
-      enablePullUp: true,
-      header: const WaterDropHeader(),
-      footer: CustomFooter(
-        builder: (BuildContext context,LoadStatus? mode){
-          Widget body ;
-          if(mode==LoadStatus.idle){
-            body =  const Text("pull up load");
-          }
-          else if(mode==LoadStatus.loading){
-            body =  const CupertinoActivityIndicator();
-          }
-          else if(mode == LoadStatus.failed){
-            body = const Text("Load Failed!Click retry!");
-          }
-          else if(mode == LoadStatus.canLoading){
-            body = const Text("release to load more");
-          }
-          else{
-            body = const Text("No more Data");
-          }
-          return SizedBox(
-            height: 55.0,
-            child: Center(child:body),
-          );
-        },
-      ),
-      controller: _refreshController,
-      onRefresh: _onRefresh,
-      onLoading: _onLoading,
-      child: ListView.builder(
-        itemCount: model.items.length,
-        itemBuilder: (context, index) {
-          debugPrint("ListListenableBuilder build ${index}");
-          return ListTile(
-            title: Text(model.items[index].title),
-            subtitle: Text(model.items[index].shareUser),
-          );
-        },
-      ),
-    );
-  }*/
-
-  Widget buildLoadingPage(VM model) {
+  Widget buildLoadingPage(BuildContext context, VM model) {
     return const Center(
       child: LoadingDialog(),
     );
   }
-  Widget buildEmptyPage(VM model) {
+  Widget buildEmptyPage(BuildContext context, VM model) {
     return Center(
       child: GestureDetector(
         child: Text('empty', style: TextStyle(fontSize: 50, color: Theme.of(context).primaryColor),),
@@ -149,7 +83,7 @@ abstract class BaseState<T extends StatefulWidget, VM extends BaseViewModel> ext
       ),
     );
   }
-  Widget buildErrorPage(VM model) {
+  Widget buildErrorPage(BuildContext context, VM model) {
     return Center(
       child: GestureDetector(
         child: Text("${model.errorCode} ${model.errorMsg}",
@@ -171,4 +105,23 @@ abstract class BaseState<T extends StatefulWidget, VM extends BaseViewModel> ext
       refreshController.loadComplete();
     }
   }
+
+  void _registerListenable() {
+    viewModel.startListenable.addListener(_onLoadStart);
+    viewModel.errorListenable.addListener(_onLoadError);
+    viewModel.resultListenable.addListener(_onLoadResult);
+    viewModel.completeListenable.addListener(_onLoadCompleted);
+  }
+
+  void _unregisterListenable() {
+    viewModel.startListenable.removeListener(_onLoadStart);
+    viewModel.errorListenable.removeListener(_onLoadError);
+    viewModel.resultListenable.removeListener(_onLoadResult);
+    viewModel.completeListenable.removeListener(_onLoadCompleted);
+  }
+
+  void _onLoadStart() { onLoadStart(); }
+  void _onLoadError() { onLoadError(viewModel.errorListenable.value); }
+  void _onLoadResult() { onLoadResult(viewModel.resultListenable.value); }
+  void _onLoadCompleted() { onLoadCompleted(); }
 }

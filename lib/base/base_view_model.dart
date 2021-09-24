@@ -18,26 +18,26 @@ class BaseViewModel with ChangeNotifier {
 
   int get resultCode => resultListenable.value;
 
-  PageState _pageState = PageState.loading;
 
   bool _isDispose = false;
   bool get isDispose => _isDispose;
 
-  PageState get pageState => _pageState;
-  set pageState(state) {
-    //if (_pageState == state) return;
-    _pageState = state;
+
+  PageState _state = PageState.loading;
+  PageState get state => _state;
+  set state(state) {
+    _state = state;
     notifyListeners();
   }
 
   void callStart() {
     startListenable.notifyListeners();
-    pageState = PageState.loading;
+    state = PageState.loading;
   }
 
   void callError(Message msg) {
     errorListenable.value = msg;
-    pageState = PageState.error;
+    state = PageState.error;
   }
 
   void callResult(RESULT result) {
@@ -48,9 +48,9 @@ class BaseViewModel with ChangeNotifier {
     }
 
     if (result.code == RESULT.success().code) {
-      pageState = PageState.success;
+      state = PageState.success;
     } else if (result.code == RESULT.empty().code) {
-      pageState = PageState.empty;
+      state = PageState.empty;
     }
   }
 
@@ -70,9 +70,7 @@ class BaseViewModel with ChangeNotifier {
 
     complete ??= () { callComplete(); };
 
-    if (loading) {
-      callStart();
-    }
+    if (loading) { callStart(); }
 
     _handleException(
             () => block(),
