@@ -35,6 +35,12 @@ class _BaseViewState<T extends BaseViewModel> extends State<BaseView<T>> {
   }
 
   @override
+  void dispose() {
+    widget.model.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<T>(
       child: Consumer<T>(

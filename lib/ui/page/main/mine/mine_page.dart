@@ -44,6 +44,9 @@ class _MinePageState extends State<MinePage> with AutomaticKeepAliveClientMixin{
           builder: (context, model) => _buildBody(context, model),
           onTab: (model) =>  _onRefresh(model, loading: true),
           onCompleted: (model) => _stopRefreshOrLoadMore(_refreshController, model),
+          onResult: (model, msg) {
+            debugPrint("onResult -> code:${msg.code} msg:${msg.msg}");
+          },
         );
       },
       onReady: (model) => _onRefresh(model, loading: true),

@@ -10,18 +10,17 @@ class BaseViewModel with ChangeNotifier {
 
   final startListenable = ValueNotifier<int>(0);
   final errorListenable = ValueNotifier<Message>(Message(0, ''));
-  final resultListenable = ValueNotifier<int>(0);
+  final resultListenable = ValueNotifier<Message>(Message(0, ''));
   final completeListenable = ValueNotifier<int>(0);
 
   int get errorCode => errorListenable.value.code;
   String get errorMsg => errorListenable.value.msg;
 
-  int get resultCode => resultListenable.value;
-
+  int get resultCode => resultListenable.value.code;
+  String get resultMsg => resultListenable.value.msg;
 
   bool _isDispose = false;
   bool get isDispose => _isDispose;
-
 
   PageState _state = PageState.loading;
   PageState get state => _state;
@@ -30,33 +29,19 @@ class BaseViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void callStart() {
-    startListenable.notifyListeners();
-    state = PageState.loading;
-  }
+  /*
+  int? _code;
+  int get code => _code!;
+  set code(value) => _code = value;
 
-  void callError(Message msg) {
-    errorListenable.value = msg;
-    state = PageState.error;
-  }
+  String? _message;
+  String get message => _message!;
+  set message(value) => _message = value;
 
-  void callResult(RESULT result) {
-    if (resultListenable.value == result.code) {
-      resultListenable.notifyListeners();
-    } else {
-      resultListenable.value = result.code;
-    }
+  void Function()? onStart;
+  void Function()? onCompleted;
+*/
 
-    if (result.code == RESULT.success().code) {
-      state = PageState.success;
-    } else if (result.code == RESULT.empty().code) {
-      state = PageState.empty;
-    }
-  }
-
-  void callComplete() {
-    completeListenable.notifyListeners();
-  }
 
   void launchOnlyResult<T>(
       Future<CResult<T>> Function() block,
@@ -66,20 +51,18 @@ class BaseViewModel with ChangeNotifier {
         bool loading=false
       }) {
 
-    error ??= (e) { callError(Message.exception(e)); };
+    error ??= (e) { _callError(Message.exception(e)); };
 
-    complete ??= () { callComplete(); };
+    complete ??= () { _callComplete(); };
 
-    if (loading) { callStart(); }
+    if (loading) { _callStart(); }
 
     _handleException(
             () => block(),
-            (value) { _executeResponse(value, (value) { callResult(success(value)); }); },
+            (value) { _executeResponse(value, (value) { _callResult(success(value)); }); },
             (e) { error!(e); },
             () {  complete!(); });
   }
-
-
 
   @override
   void notifyListeners() {
@@ -96,7 +79,29 @@ class BaseViewModel with ChangeNotifier {
     super.dispose();
   }
 
+  void _callStart() {
+    startListenable.notifyListeners();
+    state = PageState.loading;
+  }
 
+  void _callError(Message msg) {
+    errorListenable.value = msg;
+    state = PageState.error;
+  }
+
+  void _callResult(RESULT result) {
+    resultListenable.value = Message.result(result);
+    if (result.code == RESULT.success().code) {
+      state = PageState.success;
+    } else if (result.code == RESULT.empty().code) {
+      state = PageState.empty;
+    }
+  }
+
+  void _callComplete() {
+    completeListenable.notifyListeners();
+    //onCompleted!();
+  }
 
   void _handleException<T>(
       Future<CResult<T>> Function() block,

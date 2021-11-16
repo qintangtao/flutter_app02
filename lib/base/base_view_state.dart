@@ -47,7 +47,7 @@ class BaseViewState<T extends BaseViewModel> extends StatefulWidget {
 
   final Function(T)? onStart;
   final Function(T, Message)? onError;
-  final Function(T, int)? onResult;
+  final Function(T, Message)? onResult;
   final Function(T)? onCompleted;
 
   @override

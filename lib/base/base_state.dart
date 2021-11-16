@@ -18,8 +18,8 @@ abstract class BaseState<T extends StatefulWidget, VM extends BaseViewModel> ext
 
   void onLoadStart() {}
   void onLoadError(Message msg) {}
-  void onLoadResult(int code) {
-    if (code == RESULT.end().code) {
+  void onLoadResult(Message msg) {
+    if (msg.code == RESULT.end().code) {
       ToastUtil.showToast(RESULT.end().msg, context: context);
     }
   }
@@ -36,6 +36,7 @@ abstract class BaseState<T extends StatefulWidget, VM extends BaseViewModel> ext
   @override
   void dispose() {
     _unregisterListenable();
+    viewModel.dispose();
     super.dispose();
   }
 
